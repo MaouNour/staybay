@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:staybay/cubits/locale/locale_cubit.dart';
-import 'package:staybay/cubits/locale/locale_state.dart';
-import 'package:staybay/cubits/theme/theme_cubit.dart';
-import 'package:staybay/cubits/theme/theme_state.dart';
+import 'package:test/cubits/locale/locale_cubit.dart';
+import 'package:test/cubits/locale/locale_state.dart';
+import 'package:test/cubits/theme/theme_cubit.dart';
+import 'package:test/cubits/theme/theme_state.dart';
 
 class Test extends StatelessWidget {
   const Test({super.key});
