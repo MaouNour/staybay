@@ -1,11 +1,9 @@
-
 import 'package:flutter/material.dart';
-import '../app_constants.dart';
+import '../app_theme.dart';
 
-/// زر أساسي مخصص يستخدم في جميع الشاشات.
 class CustomPrimaryButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool isLoading;
 
   const CustomPrimaryButton({
@@ -17,6 +15,7 @@ class CustomPrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   
     return SizedBox(
       height: AppSizes.buttonHeight,
       width: double.infinity,
@@ -28,7 +27,7 @@ class CustomPrimaryButton extends StatelessWidget {
                   width: 24,
                   height: 24,
                   child: CircularProgressIndicator(
-                    color: Colors.white,
+                   color: Colors.white,
                     strokeWidth: 3,
                   ),
                 ),
