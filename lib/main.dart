@@ -13,16 +13,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'StayBay Dream House',
-      
-      theme: AppTheme.darkTheme,
-      //theme: AppTheme.lightTheme,
 
-      home: const WelcomeScreen(), 
-      
+      theme: AppTheme.darkTheme,
+      // theme: AppTheme.lightTheme,
+      home: const WelcomeScreen(),
     );
   }
 }

@@ -1,6 +1,10 @@
 {
-    "hello": "Hello"  ,
-    "des": "why are we here ?",
-    "change language":"Change Language",
-    "toggle theme":"Toggle Theme"
+    "wlecome":{
+        "WELCOME": "WELCOME",
+        "des1": "Find your next space, Feel at home",
+        "des2": "Where comfort meets convenience",
+        "login": "Login",
+        "signup": "Sign Up"
+    }
+    
 }
