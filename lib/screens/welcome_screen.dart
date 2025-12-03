@@ -1,21 +1,21 @@
 
 import 'package:flutter/material.dart';
+import 'package:staybay/screens/login_screen.dart';
+import 'package:staybay/screens/sign_up_screen.dart';
 import '../app_theme.dart'; 
 import '../widgets/custom_primary_button.dart';   
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
-  static const String routeName = '/';
+  static const String routeName = '/welcome';
 
   void _navigateToLogin(BuildContext context) {
-    // Navigator.of(context).pushNamed(AppRoutes.login); 
-    Navigator.of(context).pushNamed('/login'); 
+     Navigator.of(context).pushNamed(LoginScreen.routeName); 
   }
 
   void _navigateToSignUp(BuildContext context) {
-   // Navigator.of(context).pushNamed(AppRoutes.signUp); 
-    Navigator.of(context).pushNamed('/signUp'); 
+    Navigator.of(context).pushNamed(SignUpScreen.routeName);
   }
 
   @override

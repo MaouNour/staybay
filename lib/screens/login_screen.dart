@@ -1,0 +1,251 @@
+import 'package:flutter/material.dart';
+import '../app_theme.dart';
+import '../widgets/custom_primary_button.dart';
+import '../widgets/custom_text_field.dart';
+import 'success_screen.dart';
+import 'sign_up_screen.dart';
+
+class LoginScreen extends StatefulWidget {
+  static const String routeName = '/login';
+
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  final _phoneController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  bool _isPasswordVisible = false;
+  
+  final Map<String, String> _texts = {
+    'languageOption': 'English',   
+    'title': 'Login',
+    'subtitle': 'Please enter your login details to log in.',
+    'phone': 'Phone Number',
+    'password': 'Password',
+    'login': 'Log in',
+    'forgotPassword': 'Forgot password?',
+    'haveAccount': "Don't have an account?",
+    'createAccount': 'Create account',
+    'phoneRequired': 'Please enter phone number',
+    'phoneLengthError': 'Phone Number must be exactly 10 digits',
+    'passwordRequired': 'Please enter password',
+    'passwordLengthError': 'Password must be between 8 and 16 characters',
+  };
+
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _handleLogin() {
+    if (_formKey.currentState?.validate() ?? false) {
+      Navigator.of(context).pushNamed(
+        SuccessScreen.routeName,
+        arguments: true,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final verticalSpacer = SizedBox(height: screenHeight * 0.03);
+
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSizes.paddingLarge),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: screenWidth > 600 ? 500 : screenWidth),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _texts['title']!, 
+                          style: AppStyles.titleStyle.copyWith(
+                            fontSize: AppSizes.fontSizeTitle * 0.9,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).textTheme.titleLarge!.color,
+                          ),
+                        ),
+                        
+                        Text(
+                          _texts['languageOption']!,
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: screenHeight * 0.05),
+                    
+                    Align(
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: screenHeight * 0.06,
+                            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                            child: Icon(
+                              Icons.home_work_rounded,
+                              size: screenHeight * 0.06,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.01),
+                          Text(
+                            'STAY BAY',
+                            style: AppStyles.titleStyle.copyWith(
+                              color: Theme.of(context).textTheme.titleLarge!.color,
+                            ),
+                          ),
+                          Text(
+                            'Dream House',
+                            style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    verticalSpacer,
+                    SizedBox(height: screenHeight * 0.02),
+
+                    Text(
+                      _texts['title']!,
+                      style: AppStyles.titleStyle.copyWith(
+                        fontSize: AppSizes.fontSizeTitle * 0.9,
+                        color:Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      _texts['subtitle']!,
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                      textAlign: TextAlign.left,
+                    ),
+
+                    SizedBox(height: screenHeight * 0.04),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          CustomTextField(
+                            controller: _phoneController,
+                            hintText: _texts['phone']!,
+                            keyboardType: TextInputType.phone,
+                            maxLength: 10,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return _texts['phoneRequired'];
+                              }
+                              if (value.length != 10) {
+                                return _texts['phoneLengthError'];
+                              }
+                              return null;
+                            },
+                            suffixIcon: Icon(Icons.phone_android_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                          ),
+
+                          verticalSpacer,
+
+                          CustomTextField(
+                            controller: _passwordController,
+                            hintText: _texts['password']!,
+                            isPassword: !_isPasswordVisible,
+                            keyboardType: TextInputType.visiblePassword,
+                            maxLength: 16,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return _texts['passwordRequired'];
+                              }
+                              if (value.length < 8 || value.length > 16) {
+                                return _texts['passwordLengthError'];
+                              }
+                              return null;
+                            },
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: TextButton(
+                              onPressed: () {},
+                              child: Text(
+                                _texts['forgotPassword']!,
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          verticalSpacer,
+
+                          CustomPrimaryButton(
+                            text: _texts['login']!,
+                            onPressed: _handleLogin,
+                          ),
+
+                          verticalSpacer,
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _texts['haveAccount']!,
+                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
+                              ),
+                              const SizedBox(width: 5),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(SignUpScreen.routeName);
+                                },
+                                child: Text(
+                                  _texts['createAccount']!,
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
