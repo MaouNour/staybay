@@ -14,7 +14,8 @@ import 'screens/sign_up_screen.dart';
 import 'screens/success_screen.dart';
 import 'screens/home_page_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -23,42 +24,57 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localeCubit = LocaleCubit();
+
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => LocaleCubit()),
+        BlocProvider<LocaleCubit>.value(value: localeCubit),
         BlocProvider(create: (context) => ThemeCubit()),
       ],
-      child: BlocBuilder<LocaleCubit, LocaleState>(
-        builder: (context, localeState) {
-          return BlocBuilder<ThemeCubit, ThemeState>(
-            builder: (context, themeState) {
-              return MaterialApp(
-                builder: (context, child) {
-                  return Directionality(
-                    textDirection: localeState.textDirection,
-                    child: child!,
+      child: FutureBuilder(
+        future: localeCubit.init(), // ⬅ wait for JSON here
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            // Show splash or loading widget
+            return const MaterialApp(
+              home: Scaffold(body: Center(child: CircularProgressIndicator())),
+            );
+          }
+
+          // Continue with your code EXACTLY as you wrote it
+          return BlocBuilder<LocaleCubit, LocaleState>(
+            builder: (context, localeState) {
+              return BlocBuilder<ThemeCubit, ThemeState>(
+                builder: (context, themeState) {
+                  return MaterialApp(
+                    builder: (context, child) {
+                      return Directionality(
+                        textDirection: localeState.textDirection,
+                        child: child!,
+                      );
+                    },
+                    debugShowCheckedModeBanner: false,
+                    theme: AppTheme.lightTheme,
+                    darkTheme: AppTheme.darkTheme,
+                    themeMode: themeState is DarkModeState
+                        ? ThemeMode.dark
+                        : ThemeMode.light,
+                    initialRoute: WelcomeScreen.routeName,
+                    routes: {
+                      WelcomeScreen.routeName: (context) =>
+                          const WelcomeScreen(),
+                      LoginScreen.routeName: (context) => const LoginScreen(),
+                      SignUpScreen.routeName: (context) => const SignUpScreen(),
+                      HomePage.routeName: (context) => const HomePage(),
+                      SuccessScreen.routeName: (context) {
+                        final isLogin =
+                            ModalRoute.of(context)?.settings.arguments
+                                as bool? ??
+                            true;
+                        return SuccessScreen(isLoginSuccess: isLogin);
+                      },
+                    },
                   );
-                },
-                debugShowCheckedModeBanner: false,
-                theme: AppTheme.lightTheme,
-                darkTheme: AppTheme.darkTheme,
-                themeMode: themeState is DarkModeState
-                    ? ThemeMode.dark
-                    : ThemeMode.light,
-
-                initialRoute: WelcomeScreen.routeName,
-                routes: {
-                  WelcomeScreen.routeName: (context) => const WelcomeScreen(),
-                  LoginScreen.routeName: (context) => const LoginScreen(),
-                  SignUpScreen.routeName: (context) => const SignUpScreen(),
-                  HomePage.routeName: (context) => const HomePage(),
-
-                  SuccessScreen.routeName: (context) {
-                    final isLogin =
-                        ModalRoute.of(context)?.settings.arguments as bool? ??
-                        true;
-                    return SuccessScreen(isLoginSuccess: isLogin);
-                  },
                 },
               );
             },

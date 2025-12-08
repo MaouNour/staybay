@@ -14,6 +14,15 @@ class LocaleCubit extends Cubit<LocaleState> {
       ) {
     _loadLocalizedStrings();
   }
+  // Public initializer
+  Future<void> init() async {
+    await _loadLocalizedStrings();
+  }
+  // New method this is for the first method remove if you want this
+  // Future<void> loadInitial() async {
+  //   await _loadLocalizedStrings();
+  // }
+
   Future<void> _loadLocalizedStrings() async {
     String jsonString = await rootBundle.loadString(
       'assets/locales/${state.currentLanguage}.json',

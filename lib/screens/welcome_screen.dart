@@ -25,6 +25,7 @@ class WelcomeScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final topSectionHeight = screenHeight * 0.59;
     final theme = Theme.of(context);
+
     return BlocBuilder<LocaleCubit, LocaleState>(
       builder: (context, state) {
         return Scaffold(
@@ -85,7 +86,8 @@ class WelcomeScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        'WELCOME',
+                        state.localizedStrings['welcome']['WELCOME'] ??
+                            'WELCOME',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 34,
