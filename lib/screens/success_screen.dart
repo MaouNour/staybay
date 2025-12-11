@@ -31,11 +31,9 @@ class SuccessScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-                
               Container(
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  // لون الإطار الخارجي
+                  shape: BoxShape.circle,   
                   border: Border.all(
                     color: primaryColor,
                     width: 3.0, 
