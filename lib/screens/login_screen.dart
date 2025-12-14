@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:staybay/cubits/locale/locale_cubit.dart';
 import 'package:staybay/cubits/locale/locale_state.dart';
+import 'package:staybay/services/login_service.dart';
 import '../app_theme.dart';
 import '../widgets/custom_primary_button.dart';
 import '../widgets/custom_text_field.dart';
@@ -10,7 +11,6 @@ import 'sign_up_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = '/login';
-
   const LoginScreen({super.key});
 
   @override
@@ -34,7 +34,20 @@ class _LoginScreenState extends State<LoginScreen> {
   //   super.dispose();
   // }
 
-  void _handleLogin() {
+  void _handleLogin() async {
+    // var responce = await LoginService.logIn(context);
+    // if (responce != null) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text(
+    //         // context.read<LocaleCubit>().state.localizedStrings['login']
+    //         // ['invalidCredentials'] ??
+    //         responce.statusMessage ?? 'Invalid credentials',
+    //       ),
+    //       backgroundColor: Colors.red,
+    //     ),
+    //   );
+    // }
     if (_formKey.currentState?.validate() ?? false) {
       Navigator.of(context).pushNamed(SuccessScreen.routeName, arguments: true);
     }

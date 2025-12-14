@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:staybay/models/apartment_model.dart';
+import 'package:staybay/screens/account_screen.dart';
+import 'package:staybay/screens/add_apartment_screen.dart';
+import 'package:staybay/screens/apartment_details_screen.dart';
+import 'package:staybay/screens/favorites_screen.dart';
+import 'package:staybay/screens/my_bookings_screen.dart';
 
 import 'app_theme.dart';
 
@@ -56,9 +62,10 @@ class MyApp extends StatelessWidget {
                     debugShowCheckedModeBanner: false,
                     theme: AppTheme.lightTheme,
                     darkTheme: AppTheme.darkTheme,
-                    themeMode: themeState is DarkModeState
-                        ? ThemeMode.dark
-                        : ThemeMode.light,
+                    // themeMode: themeState is DarkModeState
+                    //     ? ThemeMode.dark
+                    //     : ThemeMode.light,
+                    themeMode: ThemeMode.dark,
                     initialRoute: WelcomeScreen.routeName,
                     routes: {
                       WelcomeScreen.routeName: (context) =>
@@ -66,12 +73,34 @@ class MyApp extends StatelessWidget {
                       LoginScreen.routeName: (context) => const LoginScreen(),
                       SignUpScreen.routeName: (context) => const SignUpScreen(),
                       HomePage.routeName: (context) => const HomePage(),
+                      AddApartmentScreen.routeName: (context) =>
+                          const AddApartmentScreen(),
+                      FavoritesScreen.routeName: (context) =>
+                          const FavoritesScreen(),
+                      AccountScreen.routeName: (context) =>
+                          const AccountScreen(),
+                      MyBookingsScreen.routeName: (context) =>
+                          const MyBookingsScreen(),
+
                       SuccessScreen.routeName: (context) {
                         final isLogin =
                             ModalRoute.of(context)?.settings.arguments
                                 as bool? ??
                             true;
                         return SuccessScreen(isLoginSuccess: isLogin);
+                      },
+                      ApartmentDetailsScreen.routeName: (context) {
+                        final apartment =
+                            ModalRoute.of(context)?.settings.arguments
+                                as Apartment?;
+                        if (apartment == null) {
+                          return const Scaffold(
+                            body: Center(
+                              child: Text('Error: Apartment details missing.'),
+                            ),
+                          );
+                        }
+                        return ApartmentDetailsScreen(apartment: apartment);
                       },
                     },
                   );
