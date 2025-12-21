@@ -5,6 +5,7 @@ import 'package:staybay/screens/welcome_screen.dart';
 
 class AccountScreen extends StatelessWidget {
   static const routeName = '/account';
+
   const AccountScreen({super.key});
 
   @override
@@ -15,18 +16,26 @@ class AccountScreen extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
+        centerTitle: true,
         title: const Text(
           'الملف الشخصي',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-        centerTitle: true,
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: OutlinedButton(
               onPressed: () {
-                // أنت ستربط تغيير اللغة هنا لاحقًا
+                // ربط تغيير اللغة لاحقًا
               },
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
               child: const Text('العربية'),
             ),
           ),
@@ -36,54 +45,50 @@ class AccountScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-
-            /// HEADER
+            /// ===== PROFILE HEADER =====
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 30),
+              padding: const EdgeInsets.symmetric(vertical: 32),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(30),
+                  bottom: Radius.circular(32),
                 ),
               ),
               child: Column(
                 children: [
-
-                  /// صورة شخصية + زر تعديل
+                  /// Profile Image
                   Stack(
+                    alignment: Alignment.bottomRight,
                     children: [
                       const CircleAvatar(
-                        radius: 65,
+                        radius: 68,
                         backgroundImage: AssetImage('assets/profile.jpg'),
                       ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: InkWell(
-                          onTap: () {
-                            // الانتقال إلى صفحة تغيير الصورة
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.blue,
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                              size: 20,
-                            ),
+                      InkWell(
+                        borderRadius: BorderRadius.circular(30),
+                        onTap: () {
+                          // تغيير الصورة لاحقًا
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(9),
+                          decoration: const BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 20,
+                            color: Colors.white,
                           ),
                         ),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 16),
 
-                  /// الاسم
+                  /// Name
                   const Text(
                     'الاسم الكامل',
                     style: TextStyle(
@@ -94,40 +99,40 @@ class AccountScreen extends StatelessWidget {
 
                   const SizedBox(height: 6),
 
-                  /// الرقم
+                  /// Phone
                   Text(
                     '+963 9XX XXX XXX',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey.shade700,
+                      color: Colors.grey.shade600,
                     ),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 30),
 
-            /// الأزرار
+            /// ===== ACTIONS =====
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-
                   _profileTile(
                     icon: Icons.favorite_border,
                     title: 'المفضلة',
                     onTap: () {
-                      Navigator.of( context).pushNamed(FavoritesScreen.routeName);
+                      Navigator.of(context)
+                          .pushNamed(FavoritesScreen.routeName);
                     },
                   ),
 
                   _profileTile(
-                    icon: Icons.bookmark,
+                    icon: Icons.bookmark_border,
                     title: 'حجوزاتي',
-                    
                     onTap: () {
-                      Navigator.of(context).pushNamed(BookingsScreen.routeName);
+                      Navigator.of(context)
+                          .pushNamed(BookingsScreen.routeName);
                     },
                   ),
 
@@ -135,14 +140,18 @@ class AccountScreen extends StatelessWidget {
                     icon: Icons.dark_mode_outlined,
                     title: 'تبديل الوضع',
                     onTap: () {
-                      // تغيير الثيم على مستوى التطبيق    //nabil
+                      // تبديل الثيم لاحقًا
                     },
                   ),
 
-                  _profileTile(icon: Icons.logout, title: 'تسجيل الخروج', onTap: () {
-                    // تسجيل الخروج من الحساب
-                    Navigator.of(context).pushNamed(WelcomeScreen.routeName);
-                  }),
+                  _profileTile(
+                    icon: Icons.logout,
+                    title: 'تسجيل الخروج',
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed(WelcomeScreen.routeName);
+                    },
+                  ),
                 ],
               ),
             ),
@@ -152,6 +161,7 @@ class AccountScreen extends StatelessWidget {
     );
   }
 
+  /// ===== PROFILE TILE =====
   Widget _profileTile({
     required IconData icon,
     required String title,
@@ -163,16 +173,15 @@ class AccountScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         onTap: onTap,
         child: Container(
-          width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(18),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
               ),
             ],
           ),
@@ -188,7 +197,11 @@ class AccountScreen extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              const Icon(Icons.arrow_forward_ios, size: 18),
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: Colors.grey,
+              ),
             ],
           ),
         ),

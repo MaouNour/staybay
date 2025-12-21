@@ -8,6 +8,7 @@ import '../services/apartment_service.dart';
 
 class AddApartmentScreen extends StatefulWidget {
   static const String routeName = '/add';
+
   const AddApartmentScreen({super.key});
 
   @override
@@ -15,145 +16,159 @@ class AddApartmentScreen extends StatefulWidget {
 }
 
 class _AddApartmentScreenState extends State<AddApartmentScreen> {
+  /// ===== FORM =====
   final _formKey = GlobalKey<FormState>();
-  final _title = TextEditingController();
-  final _location = TextEditingController();
-  final _price = TextEditingController();
-  final _beds = TextEditingController();
-  final _baths = TextEditingController();
-  final _area = TextEditingController();
-  final _desc = TextEditingController();
 
-  final ImagePicker _picker = ImagePicker();
-  List<XFile> _pickedImages = [];
+  final _titleController = TextEditingController();
+  final _locationController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _bedsController = TextEditingController();
+  final _bathsController = TextEditingController();
+  final _areaController = TextEditingController();
+  final _descriptionController = TextEditingController();
 
-  //nabil
+  /// ===== IMAGES =====
+  final ImagePicker _imagePicker = ImagePicker();
+  final List<XFile> _pickedImages = [];
 
-  // for web preview caching 
+  /// Web image cache
   final Map<String, Uint8List> _webImageBytes = {};
 
   @override
   void dispose() {
-    for (final c in [_title, _location, _price, _beds, _baths, _area, _desc]) {
-      c.dispose();
-    }
+    _titleController.dispose();
+    _locationController.dispose();
+    _priceController.dispose();
+    _bedsController.dispose();
+    _bathsController.dispose();
+    _areaController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
+  /// ===== IMAGE PICKER =====
   Future<void> _pickImages() async {
     try {
-      final List<XFile>? images = await _picker.pickMultiImage(
-        imageQuality: 85,
-      );
+      final images = await _imagePicker.pickMultiImage(imageQuality: 85);
       if (images == null || images.isEmpty) return;
+
       if (kIsWeb) {
-        // preload bytes for smoother web preview
-        for (final f in images) {
-          final bytes = await f.readAsBytes();
-          _webImageBytes[f.name] = bytes;
+        for (final img in images) {
+          _webImageBytes[img.name] = await img.readAsBytes();
         }
       }
-      setState(() => _pickedImages = [..._pickedImages, ...images]);
-    } catch (e) {
-      // fallback: single image (older platforms) or error
-      final XFile? single = await _picker.pickImage(
+
+      setState(() {
+        _pickedImages.addAll(images);
+      });
+    } catch (_) {
+      final image = await _imagePicker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 85,
       );
-      if (single != null) {
-        if (kIsWeb) _webImageBytes[single.name] = await single.readAsBytes();
-        setState(() => _pickedImages.add(single));
+
+      if (image == null) return;
+
+      if (kIsWeb) {
+        _webImageBytes[image.name] = await image.readAsBytes();
       }
+
+      setState(() {
+        _pickedImages.add(image);
+      });
     }
   }
 
-  void _removeImageAt(int idx) {
-    final removed = _pickedImages.removeAt(idx);
+  void _removeImageAt(int index) {
+    final removed = _pickedImages.removeAt(index);
     if (kIsWeb) _webImageBytes.remove(removed.name);
     setState(() {});
   }
 
-  void _save() {
+  /// ===== SAVE =====
+  void _saveApartment() {
     if (!_formKey.currentState!.validate()) return;
 
-    double _parseDouble(String s) =>
-        double.tryParse(s.replaceAll(',', '.')) ?? 0.0;
-    int _parseInt(String s) => int.tryParse(s) ?? 0;
+    double parseDouble(String v) =>
+        double.tryParse(v.replaceAll(',', '.')) ?? 0.0;
+    int parseInt(String v) => int.tryParse(v) ?? 0;
 
+    final imagePaths = kIsWeb
+        ? _pickedImages.map((e) => e.name).toList()
+        : _pickedImages.map((e) => e.path).toList();
 
-
-    // nabil
-
-    // NOTE: you should upload images (to cloud/storage) and save URLs.
-    final imagesPaths = kIsWeb
-        ? _pickedImages.map((x) => x.name).toList()
-        : _pickedImages.map((x) => x.path).toList();
-
-    final apt = Apartment(
+    final apartment = Apartment(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: _title.text.trim(),
-      location: _location.text.trim(),
-      pricePerNight: _parseDouble(_price.text),
-      imagePath: imagesPaths.isNotEmpty
-          ? imagesPaths.first
-          : '', // first image as thumbnail
+      title: _titleController.text.trim(),
+      location: _locationController.text.trim(),
+      pricePerNight: parseDouble(_priceController.text),
+      imagePath: imagePaths.isNotEmpty ? imagePaths.first : '',
       rating: 0.0,
       reviewsCount: 0,
-      beds: _parseInt(_beds.text),
-      baths: _parseInt(_baths.text),
-      areaSqft: _parseDouble(_area.text),
-      ownerName: '', // set if you have current user
-      amenities: <String>[],
-      description: _desc.text.trim(),
-      imagesPaths: imagesPaths,
+      beds: parseInt(_bedsController.text),
+      baths: parseInt(_bathsController.text),
+      areaSqft: parseDouble(_areaController.text),
+      ownerName: '',
+      amenities: const [],
+      description: _descriptionController.text.trim(),
+      imagesPaths: imagePaths,
     );
 
-    ApartmentService.mockApartments.add(apt);
+    ApartmentService.mockApartments.add(apartment);
 
-    Navigator.of(
-      context,
-    ).pushNamedAndRemoveUntil(AppBottomNavBar.routeName, (route) => false);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      AppBottomNavBar.routeName,
+      (_) => false,
+    );
   }
 
-  InputDecoration _dec(String label, IconData icon) => InputDecoration(
-    labelText: label,
-    prefixIcon: Icon(icon),
-    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-  );
+  /// ===== UI HELPERS =====
+  InputDecoration _inputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    );
+  }
 
-  Widget _field(
-    TextEditingController c,
+  Widget _textField(
+    TextEditingController controller,
     String label,
     IconData icon, {
-    TextInputType k = TextInputType.text,
+    TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
-  }) => Padding(
-    padding: const EdgeInsets.only(bottom: 14),
-    child: TextFormField(
-      controller: c,
-      keyboardType: k,
-      maxLines: maxLines,
-      validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
-      decoration: _dec(label, icon),
-    ),
-  );
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        maxLines: maxLines,
+        validator: (v) =>
+            (v == null || v.trim().isEmpty) ? 'Required' : null,
+        decoration: _inputDecoration(label, icon),
+      ),
+    );
+  }
 
+  /// ===== IMAGE PREVIEW =====
   Widget _imagesPreview() {
     if (_pickedImages.isEmpty) {
       return GestureDetector(
         onTap: _pickImages,
         child: Container(
           height: 120,
-          width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.grey.shade300),
             color: Colors.grey.shade50,
           ),
-          child: Center(
+          child: const Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: [
                 Icon(Icons.photo_library_outlined, size: 28),
                 SizedBox(height: 6),
                 Text('Add images'),
@@ -170,9 +185,8 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
         scrollDirection: Axis.horizontal,
         itemCount: _pickedImages.length + 1,
         separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (context, i) {
-          if (i == _pickedImages.length) {
-            // add button at end
+        itemBuilder: (context, index) {
+          if (index == _pickedImages.length) {
             return InkWell(
               onTap: _pickImages,
               child: Container(
@@ -181,63 +195,40 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.grey.shade300),
                 ),
-                child: const Center(child: Icon(Icons.add_a_photo)),
+                child: const Icon(Icons.add_a_photo),
               ),
             );
           }
-          final file = _pickedImages[i];
+
+          final image = _pickedImages[index];
+
           return Stack(
             children: [
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.grey.shade200,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: SizedBox(
+                  width: 120,
+                  height: 120,
+                  child: kIsWeb
+                      ? Image.memory(
+                          _webImageBytes[image.name]!,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.file(
+                          File(image.path),
+                          fit: BoxFit.cover,
+                        ),
                 ),
-                clipBehavior: Clip.hardEdge,
-                child: kIsWeb
-                    ? (_webImageBytes[file.name] != null
-                          ? Image.memory(
-                              _webImageBytes[file.name]!,
-                              fit: BoxFit.cover,
-                            )
-                          : FutureBuilder<Uint8List>(
-                              future: file.readAsBytes(),
-                              builder: (context, snap) {
-                                if (snap.connectionState !=
-                                    ConnectionState.done) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  );
-                                }
-                                _webImageBytes[file.name] = snap.data!;
-                                return Image.memory(
-                                  snap.data!,
-                                  fit: BoxFit.cover,
-                                );
-                              },
-                            ))
-                    : Image.file(File(file.path), fit: BoxFit.cover),
               ),
               Positioned(
-                right: 6,
                 top: 6,
+                right: 6,
                 child: InkWell(
-                  onTap: () => _removeImageAt(i),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black54,
-                    ),
-                    padding: const EdgeInsets.all(6),
-                    child: const Icon(
-                      Icons.close,
-                      size: 16,
-                      color: Colors.white,
-                    ),
+                  onTap: () => _removeImageAt(index),
+                  child: const CircleAvatar(
+                    radius: 14,
+                    backgroundColor: Colors.black54,
+                    child: Icon(Icons.close, size: 16, color: Colors.white),
                   ),
                 ),
               ),
@@ -248,27 +239,32 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
     );
   }
 
+  /// ===== BUILD =====
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add New Apartment'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /// ===== FULL WIDTH HEADER =====
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(18),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(22),
+                    bottomRight: Radius.circular(22),
+                  ),
                 ),
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,7 +272,7 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                     Text(
                       'Create a New Listing',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -288,64 +284,86 @@ class _AddApartmentScreenState extends State<AddApartmentScreen> {
                   ],
                 ),
               ),
+
               const SizedBox(height: 18),
 
-              // images picker & preview
-              _imagesPreview(),
-              const SizedBox(height: 12),
+              /// ===== FORM CONTENT =====
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    _imagesPreview(),
+                    const SizedBox(height: 14),
 
-              _field(_title, 'Apartment Title', Icons.home),
-              _field(_location, 'Location', Icons.location_on),
-              _field(
-                _price,
-                'Price per Night',
-                Icons.attach_money,
-                k: const TextInputType.numberWithOptions(decimal: true),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: _field(
-                      _beds,
-                      'Beds',
-                      Icons.bed,
-                      k: TextInputType.number,
+                    _textField(
+                        _titleController, 'Apartment Title', Icons.home),
+                    _textField(_locationController, 'Location',
+                        Icons.location_on),
+                    _textField(
+                      _priceController,
+                      'Price per Night',
+                      Icons.attach_money,
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _field(
-                      _baths,
-                      'Baths',
-                      Icons.bathtub,
-                      k: TextInputType.number,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _textField(
+                            _bedsController,
+                            'Beds',
+                            Icons.bed,
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _textField(
+                            _bathsController,
+                            'Baths',
+                            Icons.bathtub,
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              _field(
-                _area,
-                'Area (sqft)',
-                Icons.square_foot,
-                k: const TextInputType.numberWithOptions(decimal: true),
-              ),
-              _field(_desc, 'Description', Icons.description, maxLines: 4),
-              const SizedBox(height: 22),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _save,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                    _textField(
+                      _areaController,
+                      'Area (sqft)',
+                      Icons.square_foot,
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
                     ),
-                  ),
-                  child: const Text(
-                    'Save Apartment',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
+                    _textField(
+                      _descriptionController,
+                      'Description',
+                      Icons.description,
+                      maxLines: 4,
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: _saveApartment,
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'Save Apartment',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

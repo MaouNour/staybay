@@ -13,9 +13,12 @@ class Booking {
     required this.bookingId,
   });
 
-  int get nights => checkOut.difference(checkIn).inDays == 0
-      ? 1
-      : checkOut.difference(checkIn).inDays;
+  /// Returns the number of nights for the booking
+  int get nights {
+    final days = checkOut.difference(checkIn).inDays;
+    return days == 0 ? 1 : days;
+  }
 
+  /// Returns the total price for the booking
   double get totalPrice => apartment.pricePerNight * nights;
 }
