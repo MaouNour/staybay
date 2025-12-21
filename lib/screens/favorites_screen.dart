@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:staybay/screens/home_page_screen.dart';
 import '../app_theme.dart';
 import '../services/apartment_service.dart';
 import '../models/apartment_model.dart';
@@ -18,7 +17,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   late Future<List<Apartment>> _favoritesFuture;
 
   List<Apartment> _fetchMockFavorites() {
-    return ApartmentService.mockApartments.where((apartment) => apartment.isFavorite).toList();
+    return ApartmentService.mockApartments
+        .where((apartment) => apartment.isFavorite)
+        .toList();
   }
 
   @override
@@ -32,19 +33,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          ' My Favorites',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      
-        backgroundColor: theme.colorScheme.primary,
-        foregroundColor: Colors.white,
-        elevation: 4,
-      ),
+      appBar: AppBar(title: const Text('My Favorites'), centerTitle: true),
+     
       body: FutureBuilder<List<Apartment>>(
         future: _favoritesFuture,
         builder: (context, snapshot) {

@@ -50,7 +50,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
         selectedLabelStyle: AppStyles.labelStyle.copyWith(
           fontSize: AppSizes.fontSizeLabel * 0.9,
           color: activeColor,
-        ),
+        ),  
         unselectedLabelStyle: AppStyles.labelStyle.copyWith(
           fontSize: AppSizes.fontSizeLabel * 0.9,
           color: inactiveColor,

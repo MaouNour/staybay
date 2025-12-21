@@ -72,16 +72,17 @@ class _ApartmentDetailsScreenState extends State<ApartmentDetailsScreen> {
     }
   }
 
-  void _navigateToBooking(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const BookingDetailsScreen(),
-        settings: RouteSettings(arguments: widget.apartment),
+void _navigateToBooking(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => BookingDetailsScreen(
+        apartment: widget.apartment,
       ),
-    );
-  }
-
+    ),
+  );
+}
+  
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -99,7 +100,7 @@ class _ApartmentDetailsScreenState extends State<ApartmentDetailsScreen> {
               backgroundColor: theme.colorScheme.primary,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.of(context).pop(),
               ),
               actions: [
                 IconButton(
@@ -108,7 +109,6 @@ class _ApartmentDetailsScreenState extends State<ApartmentDetailsScreen> {
                     color: _isFavorite ? Colors.red : Colors.white,
                   ),
                   onPressed: () {
-                  //  print('Favorite icon pressed and isFavorite: $_isFavorite');
                     setState(() {
                       final index = ApartmentService.mockApartments.indexWhere(
                         (apt) => apt.id == apartmentDetails.id);
@@ -116,7 +116,7 @@ class _ApartmentDetailsScreenState extends State<ApartmentDetailsScreen> {
                       _isFavorite = !_isFavorite;
                     });
                   },
-                ),
+               ),
               ],
               flexibleSpace: FlexibleSpaceBar(
                 background: DetailsImageCarousel(

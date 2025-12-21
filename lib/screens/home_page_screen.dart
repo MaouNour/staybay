@@ -40,31 +40,26 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    final theme = Theme.of(context);
-    return AppBar(
-      backgroundColor: theme.colorScheme.primary,
-      title: Text(
-        'Discover Your New Home',
-        style: theme.textTheme.titleMedium?.copyWith(
-          color: theme.colorScheme.onPrimary,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-     // appBar: _buildAppBar(context),
       body: Column(
         children: [
-          SizedBox(height: 40,),
-          SearchFilterBar(searchController: _searchController),
+          SizedBox(height: 40),
+          SearchFiltersWidget(
+            onLocationSelected: (gov, city) {
+              // send to backend
+            },
+            onBedsSelected: (beds) {},
+            onBathsSelected: (baths) {},
+            onAreaSelected: (min, max) {},
+            onPriceSelected: (min, max) {},
+          ),
+
+          //   SearchFiltersWidget(),
           Expanded(
             child: _isLoading
                 ? Center(

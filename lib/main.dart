@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:staybay/screens/account_screen.dart';
 import 'package:staybay/screens/add_apartment_screen.dart';
 import 'package:staybay/screens/apartment_details_screen.dart';
+import 'package:staybay/screens/booking_details_screen.dart';
+import 'package:staybay/screens/bookings_screen.dart';
 import 'package:staybay/screens/favorites_screen.dart';
 import 'package:staybay/widgets/app_bottom_nav_bar.dart';
 
@@ -87,6 +89,10 @@ class MyApp extends StatelessWidget {
 
                       AccountScreen.routeName: (context) =>
                           const AccountScreen(),
+                      BookingsScreen.routeName: (context) =>
+                          const BookingsScreen(),
+                      BookingDetailsScreen.routeName: (context) =>
+                          BookingsScreen(),
                     },
                   );
                 },
