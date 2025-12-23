@@ -54,6 +54,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
   );
 }
+
 class AppTheme {
   // Light Theme
   static ThemeData get lightTheme {
@@ -64,6 +65,7 @@ class AppTheme {
         primary: AppColors.primaryBlue,
         secondary: AppColors.primaryBlue,
         error: AppColors.errorRed,
+
         surface: AppColors.backgroundColor,
       ),
       appBarTheme: const AppBarTheme(
@@ -201,4 +203,3 @@ class AppTheme {
     );
   }
 }
-

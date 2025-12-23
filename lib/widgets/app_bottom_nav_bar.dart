@@ -6,7 +6,7 @@ import '../screens/favorites_screen.dart';
 import '../screens/account_screen.dart';
 
 class AppBottomNavBar extends StatefulWidget {
-  static const String routeName = 'bottom-bar';
+  static String routeName = 'bottom-bar';
 
   const AppBottomNavBar({super.key});
 
@@ -50,7 +50,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
         selectedLabelStyle: AppStyles.labelStyle.copyWith(
           fontSize: AppSizes.fontSizeLabel * 0.9,
           color: activeColor,
-        ),  
+        ),
         unselectedLabelStyle: AppStyles.labelStyle.copyWith(
           fontSize: AppSizes.fontSizeLabel * 0.9,
           color: inactiveColor,

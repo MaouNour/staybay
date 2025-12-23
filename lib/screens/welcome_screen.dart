@@ -10,7 +10,7 @@ import '../widgets/custom_primary_button.dart';
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
-  static const String routeName = '/welcome';
+  static String routeName = '/welcome';
 
   void _navigateToLogin(BuildContext context) {
     Navigator.of(context).pushNamed(LoginScreen.routeName);

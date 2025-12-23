@@ -24,13 +24,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final bool islogin = prefs.getBool('isLoggedIn') ?? false;
-  runApp(MyApp(isLoggedIn: islogin));
+  if (islogin) {
+    AppBottomNavBar.routeName = '/';
+  } else {
+    WelcomeScreen.routeName = '/';
+  }
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final bool isLoggedIn;
-
-  const MyApp({super.key, required this.isLoggedIn});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,12 +65,11 @@ class MyApp extends StatelessWidget {
                     debugShowCheckedModeBanner: false,
                     theme: AppTheme.lightTheme,
                     darkTheme: AppTheme.darkTheme,
-                    themeMode: themeState is DarkModeState
-                        ? ThemeMode.dark
-                        : ThemeMode.light,
-                    initialRoute: isLoggedIn
-                        ? HomePage.routeName
-                        : WelcomeScreen.routeName,
+                    themeMode: ThemeMode.dark,
+
+                    //  themeState is DarkModeState
+                    //     ? ThemeMode.dark
+                    //     : ThemeMode.light,
                     routes: _buildAppRoutes(),
                   );
                 },
