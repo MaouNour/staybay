@@ -9,7 +9,6 @@ import 'cubits/theme/theme_cubit.dart';
 import 'cubits/theme/theme_state.dart';
 import 'screens/account_screen.dart';
 import 'screens/add_apartment_screen.dart';
-import 'screens/apartment_details_screen.dart';
 import 'screens/booking_details_screen.dart';
 import 'screens/bookings_screen.dart';
 import 'screens/favorites_screen.dart';
@@ -49,7 +48,9 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return const MaterialApp(
-              home: Scaffold(body: Center(child: CircularProgressIndicator())),
+              home: Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              ),
             );
           }
 
@@ -65,11 +66,10 @@ class MyApp extends StatelessWidget {
                     debugShowCheckedModeBanner: false,
                     theme: AppTheme.lightTheme,
                     darkTheme: AppTheme.darkTheme,
-                    themeMode: ThemeMode.dark,
-
-                    //  themeState is DarkModeState
-                    //     ? ThemeMode.dark
-                    //     : ThemeMode.light,
+                    themeMode: themeState is DarkModeState
+                        ? ThemeMode.dark
+                        : ThemeMode.light,
+                    initialRoute: AppBottomNavBar.routeName,
                     routes: _buildAppRoutes(),
                   );
                 },
@@ -83,7 +83,7 @@ class MyApp extends StatelessWidget {
 
   /// Returns a map of all application routes
   Map<String, WidgetBuilder> _buildAppRoutes() {
-    return {
+    return {  
       WelcomeScreen.routeName: (context) => const WelcomeScreen(),
       LoginScreen.routeName: (context) => const LoginScreen(),
       SignUpScreen.routeName: (context) => const SignUpScreen(),
@@ -94,11 +94,12 @@ class MyApp extends StatelessWidget {
             ModalRoute.of(context)?.settings.arguments as bool? ?? true;
         return SuccessScreen(isLoginSuccess: isLogin);
       },
-      AddApartmentScreen.routeName: (context) => const AddApartmentScreen(),
+      AddApartmentScreen.routeName: (context) =>  AddApartmentScreen(),
       FavoritesScreen.routeName: (context) => const FavoritesScreen(),
       AccountScreen.routeName: (context) => const AccountScreen(),
       BookingsScreen.routeName: (context) => const BookingsScreen(),
       BookingDetailsScreen.routeName: (context) => BookingsScreen(),
+      MyApartmentsScreen.routeName: (context) =>  MyApartmentsScreen(),
     };
   }
 }

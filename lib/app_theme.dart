@@ -54,7 +54,10 @@ class AppStyles {
     fontWeight: FontWeight.bold,
   );
 }
+<<<<<<< HEAD
+=======
 
+>>>>>>> 9473d48d8b197490307bbf8f31dd53d47abc0e48
 class AppTheme {
   // Light Theme
   static ThemeData get lightTheme {
@@ -203,3 +206,4 @@ class AppTheme {
     );
   }
 }
+

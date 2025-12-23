@@ -6,7 +6,11 @@ import '../screens/favorites_screen.dart';
 import '../screens/account_screen.dart';
 
 class AppBottomNavBar extends StatefulWidget {
+<<<<<<< HEAD
+  static const String routeName = 'bottom-bar';
+=======
   static String routeName = 'bottom-bar';
+>>>>>>> 9473d48d8b197490307bbf8f31dd53d47abc0e48
 
   const AppBottomNavBar({super.key});
 
@@ -17,11 +21,11 @@ class AppBottomNavBar extends StatefulWidget {
 class _AppBottomNavBarState extends State<AppBottomNavBar> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
-    HomePage(),
+  final List<Widget> _pages = [
+    const HomePage(),
     AddApartmentScreen(),
-    FavoritesScreen(),
-    AccountScreen(),
+    const FavoritesScreen(),
+    const AccountScreen(),
   ];
 
   @override
@@ -50,7 +54,11 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
         selectedLabelStyle: AppStyles.labelStyle.copyWith(
           fontSize: AppSizes.fontSizeLabel * 0.9,
           color: activeColor,
+<<<<<<< HEAD
+        ),  
+=======
         ),
+>>>>>>> 9473d48d8b197490307bbf8f31dd53d47abc0e48
         unselectedLabelStyle: AppStyles.labelStyle.copyWith(
           fontSize: AppSizes.fontSizeLabel * 0.9,
           color: inactiveColor,

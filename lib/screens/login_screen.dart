@@ -26,13 +26,13 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
 
   Map<String, dynamic> get locale =>
-      context.read<LocaleCubit>().state.localizedStrings['login'];
-  // @override
-  // void dispose() {
-  //   _phoneController.dispose();
-  //   _passwordController.dispose();
-  //   super.dispose();
-  // }
+  context.read<LocaleCubit>().state.localizedStrings['login'];
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
